@@ -1,8 +1,8 @@
 <?php
 
-namespace Appzcoder\CrudGenerator\Commands;
+namespace App\Console\Commands;
 
-use File;
+use Illuminate\Support\Facades\File;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
@@ -267,7 +267,7 @@ class CrudViewCommand extends Command
         $formHelper = $this->option('form-helper');
         $this->viewDirectoryPath = config('crudgenerator.custom_template')
             ? config('crudgenerator.path') . 'views/' . $formHelper . '/'
-            : __DIR__ . '/../stubs/views/' . $formHelper . '/';
+        : resource_path("stubs/views/" . $formHelper . '/');
 
 
         $this->crudName = strtolower($this->argument('name'));
