@@ -39,6 +39,9 @@ class CrudControllerCommand extends GeneratorCommand
      */
     protected $type = 'Controller';
 
+
+    protected $viewPath = 'admin';
+
     /**
      * Get the stub file for the generator.
      *
@@ -46,9 +49,7 @@ class CrudControllerCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return config('crudgenerator.custom_template')
-        ? config('crudgenerator.path') . '/controller.stub'
-        : resource_path("stubs/controller.stub");
+        return resource_path("stubs/controller.stub");
     }
 
     /**
@@ -60,7 +61,7 @@ class CrudControllerCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\\' . ($this->option('controller-namespace') ? $this->option('controller-namespace') : 'Http\Controllers');
+        return $rootNamespace . '\\' . ($this->option('controller-namespace') ? $this->option('controller-namespace') : 'Http\Controllers\Admin');
     }
 
     /**
@@ -88,7 +89,7 @@ class CrudControllerCommand extends GeneratorCommand
     {
         $stub = $this->files->get($this->getStub());
 
-        $viewPath = $this->option('view-path') ? $this->option('view-path') . '.' : '';
+        $viewPath = $this->viewPath . '.';
         $crudName = strtolower($this->option('crud-name'));
         $crudNameSingular = Str::singular($crudName);
         $modelName = $this->option('model-name');

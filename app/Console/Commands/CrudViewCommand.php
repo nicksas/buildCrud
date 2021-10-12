@@ -240,6 +240,8 @@ class CrudViewCommand extends Command
      */
     protected $delimiter;
 
+    protected $viewPath = 'admin';
+
     /**
      * Create a new command instance.
      */
@@ -286,12 +288,9 @@ class CrudViewCommand extends Command
         $this->viewName = Str::snake($this->argument('name'), '-');
 
         $viewDirectory = config('view.paths')[0] . '/';
-        if ($this->option('view-path')) {
-            $this->userViewPath = $this->option('view-path');
-            $path = $viewDirectory . $this->userViewPath . '/' . $this->viewName . '/';
-        } else {
-            $path = $viewDirectory . $this->viewName . '/';
-        }
+
+            $path = $viewDirectory . $this->viewPath . '/' . $this->viewName . '/';
+
 
         $this->viewTemplateDir = isset($this->userViewPath)
             ? $this->userViewPath . '.' . $this->viewName
