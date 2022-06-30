@@ -349,10 +349,9 @@ class CrudViewCommand extends Command
             if ($value['type'] !== 'file') {
                 $this->formBodyHtml .= '<td>{{ $item->' . $field . ' }}</td> ';
                 $this->formBodyHtmlForShowView .= '<tr><th> ' . $label . ' </th><td> {{ $%%crudNameSingular%%->' . $field . ' }} </td></tr>';
-
             } else {
-                $this->formBodyHtml .= '<td><img src="{{ asset($item->' . $field . ' ?? "") }}" style="width:100px" alt=""></td> ';
-                $this->formBodyHtmlForShowView .= '<tr><th> ' . $label . ' </th><td> <img src="{{ asset($%%crudNameSingular%%->' . $field . ' ?? "") }}" style="width:100px" alt=""> </td></tr>';
+                $this->formBodyHtml .= '<td><a data-fancybox data-type="image" href="{{ asset($item->' . $field . ' ?? "") }}"><img src="{{ asset($item->' . $field . ' ?? "") }}" style="width:100px" alt=""></a></td> ';
+                $this->formBodyHtmlForShowView .= '<tr><th> ' . $label . ' </th><td><a data-fancybox data-type="image" href="{{ asset($%%crudNameSingular%%->' . $field . ' ?? "") }}"><img src="{{ asset($%%crudNameSingular%%->' . $field . ' ?? "") }}" style="width:100px" alt=""></a> </td></tr>';
             }
             $i++;
         }

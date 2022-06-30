@@ -1,5 +1,8 @@
 <br>
-<img src="{{ asset(isset($%%crudNameSingular%%->%%itemName%%) ? $%%crudNameSingular%%->%%itemName%% : '') }}" alt="" width="200px">
+<a data-fancybox data-type="image" href="{{ asset(isset($%%crudNameSingular%%->%%itemName%%) ? $%%crudNameSingular%%->%%itemName%% : '') }}">
+    <img src="{{ asset(isset($%%crudNameSingular%%->%%itemName%%) ? $%%crudNameSingular%%->%%itemName%% : '') }}" class="mb-2" width="100px" alt="">
+</a>
 <div class="custom-file">
-    <input class="custom-file-input" name="%%itemName%%" type="%%fieldType%%"  id="image" value="{{ isset($%%crudNameSingular%%->%%itemName%%) ? $%%crudNameSingular%%->%%itemName%% : '' }}" %%required%%>
+    <input class="custom-file-input" name="%%itemName%%" type="%%fieldType%%"  id="%%itemName%%" value="{{ isset($%%crudNameSingular%%->%%itemName%%) ? $%%crudNameSingular%%->%%itemName%% : '' }}" %%required%%>
+    <label class="custom-file-label" for="%%itemName%%">Выберите файл</label>
 </div>
