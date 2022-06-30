@@ -55,7 +55,7 @@ class CrudControllerCommand extends GeneratorCommand
     /**
      * Get the default namespace for the class.
      *
-     * @param  string $rootNamespace
+     * @param string $rootNamespace
      *
      * @return string
      */
@@ -67,7 +67,7 @@ class CrudControllerCommand extends GeneratorCommand
     /**
      * Determine if the class already exists.
      *
-     * @param  string  $rawName
+     * @param string $rawName
      * @return bool
      */
     protected function alreadyExists($rawName)
@@ -81,7 +81,7 @@ class CrudControllerCommand extends GeneratorCommand
     /**
      * Build the model class with the given name.
      *
-     * @param  string  $name
+     * @param string $name
      *
      * @return string
      */
@@ -123,28 +123,34 @@ class CrudControllerCommand extends GeneratorCommand
             $validationRules .= "\n\t\t]);";
         }
 
-        if (\App::VERSION() < '5.3') {
-            $snippet = <<<EOD
-        if (\$request->hasFile('{{fieldName}}')) {
-            \$file = \$request->file('{{fieldName}}');
-            \$fileName = str_random(40) . '.' . \$file->getClientOriginalExtension();
-            \$destinationPath = storage_path('/app/public/uploads');
-            \$file->move(\$destinationPath, \$fileName);
-            \$requestData['{{fieldName}}'] = 'uploads/' . \$fileName;
-        }
-EOD;
-        } else {
-            $snippet = <<<EOD
-        if (\$request->hasFile('{{fieldName}}')) {
-            \$requestData['{{fieldName}}'] = \$request->file('{{fieldName}}')
-                ->store('uploads', 'public');
-        }
-EOD;
-        }
 
+        $snippet = <<<EOD
+
+        if (\$request->hasFile('{{fieldName}}'))
+            \$requestData['{{fieldName}}'] = Image::uploadImage(\$request['{{fieldName}}'], '{{modelName}}');
+        EOD;
+
+        $snippetUpdate = <<<EOD
+
+        if (\$request->hasFile('{{fieldName}}'))
+            \$requestData['{{fieldName}}'] = Image::uploadImage(\$request['{{fieldName}}'], '{{modelName}}', \${{crudName}}->{{fieldName}});
+        EOD;
+
+        $snippetDelete = <<<EOD
+
+        if (isset(\${{crudName}}->{{fieldName}}))
+            Image::delete(\${{crudName}}->{{fieldName}});
+        EOD;
+
+        $snippetImportImage = <<<EOD
+        use App\Helpers\Images\Image;
+        EOD;
 
         $fieldsArray = explode(';', $fields);
         $fileSnippet = '';
+        $fileUpdateSnippet = '';
+        $fileDeleteSnippet = '';
+        $importImageClassSnippet = '';
         $whereSnippet = '';
 
         if ($fields) {
@@ -154,6 +160,9 @@ EOD;
 
                 if (trim($itemArray[1]) == 'file') {
                     $fileSnippet .= str_replace('{{fieldName}}', trim($itemArray[0]), $snippet) . "\n";
+                    $fileUpdateSnippet .= str_replace('{{fieldName}}', trim($itemArray[0]), $snippetUpdate) . "\n";
+                    $fileDeleteSnippet .= str_replace('{{fieldName}}', trim($itemArray[0]), $snippetDelete) . "\n";
+                    $importImageClassSnippet .= str_replace('{{fieldName}}', trim($itemArray[0]), $snippetImportImage) . "\n";
                 }
 
                 $fieldName = trim($itemArray[0]);
@@ -167,6 +176,10 @@ EOD;
         return $this->replaceNamespace($stub, $name)
             ->replaceViewPath($stub, $viewPath)
             ->replaceViewName($stub, $viewName)
+            ->replaceFileSnippet($stub, $fileSnippet)
+            ->replaceFileUpdateSnippet($stub, $fileUpdateSnippet)
+            ->replaceFileDeleteSnippet($stub, $fileDeleteSnippet)
+            ->replaceImportImageClassSnippet($stub, $importImageClassSnippet)
             ->replaceCrudName($stub, $crudName)
             ->replaceCrudNameSingular($stub, $crudNameSingular)
             ->replaceModelName($stub, $modelName)
@@ -177,7 +190,6 @@ EOD;
             ->replaceRoutePrefixCap($stub, $routePrefixCap)
             ->replaceValidationRules($stub, $validationRules)
             ->replacePaginationNumber($stub, $perPage)
-            ->replaceFileSnippet($stub, $fileSnippet)
             ->replaceWhereSnippet($stub, $whereSnippet)
             ->replaceClass($stub, $name);
     }
@@ -200,8 +212,8 @@ EOD;
     /**
      * Replace the viewPath for the given stub.
      *
-     * @param  string  $stub
-     * @param  string  $viewPath
+     * @param string $stub
+     * @param string $viewPath
      *
      * @return $this
      */
@@ -215,8 +227,8 @@ EOD;
     /**
      * Replace the crudName for the given stub.
      *
-     * @param  string  $stub
-     * @param  string  $crudName
+     * @param string $stub
+     * @param string $crudName
      *
      * @return $this
      */
@@ -230,8 +242,8 @@ EOD;
     /**
      * Replace the crudNameSingular for the given stub.
      *
-     * @param  string  $stub
-     * @param  string  $crudNameSingular
+     * @param string $stub
+     * @param string $crudNameSingular
      *
      * @return $this
      */
@@ -245,8 +257,8 @@ EOD;
     /**
      * Replace the modelName for the given stub.
      *
-     * @param  string  $stub
-     * @param  string  $modelName
+     * @param string $stub
+     * @param string $modelName
      *
      * @return $this
      */
@@ -260,8 +272,8 @@ EOD;
     /**
      * Replace the modelNamespace for the given stub.
      *
-     * @param  string  $stub
-     * @param  string  $modelNamespace
+     * @param string $stub
+     * @param string $modelNamespace
      *
      * @return $this
      */
@@ -295,8 +307,8 @@ EOD;
     /**
      * Replace the routePrefix for the given stub.
      *
-     * @param  string  $stub
-     * @param  string  $routePrefix
+     * @param string $stub
+     * @param string $routePrefix
      *
      * @return $this
      */
@@ -310,8 +322,8 @@ EOD;
     /**
      * Replace the routePrefixCap for the given stub.
      *
-     * @param  string  $stub
-     * @param  string  $routePrefixCap
+     * @param string $stub
+     * @param string $routePrefixCap
      *
      * @return $this
      */
@@ -325,8 +337,8 @@ EOD;
     /**
      * Replace the routeGroup for the given stub.
      *
-     * @param  string  $stub
-     * @param  string  $routeGroup
+     * @param string $stub
+     * @param string $routeGroup
      *
      * @return $this
      */
@@ -340,8 +352,8 @@ EOD;
     /**
      * Replace the validationRules for the given stub.
      *
-     * @param  string  $stub
-     * @param  string  $validationRules
+     * @param string $stub
+     * @param string $validationRules
      *
      * @return $this
      */
@@ -378,6 +390,51 @@ EOD;
     protected function replaceFileSnippet(&$stub, $fileSnippet)
     {
         $stub = str_replace('{{fileSnippet}}', $fileSnippet, $stub);
+
+        return $this;
+    }
+
+    /**
+     * Replace the file update snippet for the given stub
+     *
+     * @param $stub
+     * @param $fileSnippet
+     *
+     * @return $this
+     */
+    protected function replaceFileUpdateSnippet(&$stub, $fileSnippet)
+    {
+        $stub = str_replace('{{fileUpdateSnippet}}', $fileSnippet, $stub);
+
+        return $this;
+    }
+
+    /**
+     * Replace the file update snippet for the given stub
+     *
+     * @param $stub
+     * @param $fileSnippet
+     *
+     * @return $this
+     */
+    protected function replaceFileDeleteSnippet(&$stub, $fileSnippet)
+    {
+        $stub = str_replace('{{fileDeleteSnippet}}', $fileSnippet, $stub);
+
+        return $this;
+    }
+
+    /**
+     * Replace the file update snippet for the given stub
+     *
+     * @param $stub
+     * @param $fileSnippet
+     *
+     * @return $this
+     */
+    protected function replaceImportImageClassSnippet(&$stub, $fileSnippet)
+    {
+        $stub = str_replace('{{importImageClassSnippet}}', $fileSnippet, $stub);
 
         return $this;
     }

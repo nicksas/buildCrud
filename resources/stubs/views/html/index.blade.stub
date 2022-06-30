@@ -1,27 +1,25 @@
-@extends('admin.layouts.app')
+@extends('admin.layouts.main')
 
 @section('content')
-    <div class="container">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>%%crudNameCap%%</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header">%%crudNameCap%%</div>
                     <div class="card-body">
-                        <a href="{{ url('/%%routeGroup%%%%viewName%%/create') }}" class="btn btn-success btn-sm" title="Add New %%modelName%%">
+                        <a href="{{ route('admin.%%routeGroup%%%%viewName%%.create') }}" class="btn btn-success btn-sm" title="Add New %%modelName%%">
                             <i class="fa fa-plus" aria-hidden="true"></i> Создать
                         </a>
-
-                        <form method="GET" action="{{ url('/%%routeGroup%%%%viewName%%') }}" accept-charset="UTF-8" class="form-inline my-2 my-lg-0 float-right" role="search">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="search" placeholder="Поиск..." value="{{ request('search') }}">
-                                <span class="input-group-append">
-                                    <button class="btn btn-secondary" type="submit">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </span>
-                            </div>
-                        </form>
-
                         <br/>
                         <br/>
                         <div class="table-responsive">
@@ -37,10 +35,11 @@
                                         <td>{{ $loop->iteration }}</td>
                                         %%formBodyHtml%%
                                         <td>
-                                            <a href="{{ url('/%%routeGroup%%%%viewName%%/' . $item->%%primaryKey%%) }}" title="Просмотр %%modelName%%"><button class="btn btn-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i> Просмотр</button></a>
-                                            <a href="{{ url('/%%routeGroup%%%%viewName%%/' . $item->%%primaryKey%% . '/edit') }}" title="Редактировать %%modelName%%"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Редактировать</button></a>
 
-                                            <form method="POST" action="{{ url('/%%routeGroup%%%%viewName%%' . '/' . $item->%%primaryKey%%) }}" accept-charset="UTF-8" style="display:inline">
+                                            {{--<a href="{{ url('/admin/%%routeGroup%%%%viewName%%/' . $item->%%primaryKey%%) }}" title="Просмотр %%modelName%%"><button class="btn btn-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i> Просмотр</button></a>--}}
+                                            <a href="{{ url('/admin/%%routeGroup%%%%viewName%%/' . $item->%%primaryKey%% . '/edit') }}" title="Редактировать %%modelName%%"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Редактировать</button></a>
+
+                                            <form method="POST" action="{{ url('/admin/%%routeGroup%%%%viewName%%' . '/' . $item->%%primaryKey%%) }}" accept-charset="UTF-8" style="display:inline">
                                                 @method('DELETE')
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger btn-sm" title="Улдалить %%modelName%%" onclick="return confirm(&quot;Confirm delete?&quot;)"><i class="fa fa-trash-o" aria-hidden="true"></i> Удалить</button>

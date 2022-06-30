@@ -5,18 +5,8 @@
             "type": "string"
         },
         {
-            "name": "content",
-            "type": "text"
-        },
-        {
-            "name": "title_seo",
-            "type": "text"
-        }
-    ],
-    "validations": [
-        {
-            "field": "title",
-            "rules": "required|max:10"
+            "name": "image",
+            "type": "file"
         }
     ]
 }

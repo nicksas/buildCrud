@@ -1,0 +1,5 @@
+<br>
+<img src="{{ asset(isset($%%crudNameSingular%%->%%itemName%%) ? $%%crudNameSingular%%->%%itemName%% : '') }}" alt="" width="200px">
+<div class="custom-file">
+    <input class="custom-file-input" name="%%itemName%%" type="%%fieldType%%"  id="image" value="{{ isset($%%crudNameSingular%%->%%itemName%%) ? $%%crudNameSingular%%->%%itemName%% : '' }}" %%required%%>
+</div>

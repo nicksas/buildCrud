@@ -6,6 +6,7 @@ use DummyRootNamespaceHttp\Controllers\Controller;
 
 use DummyRootNamespace{{modelNamespace}}{{modelName}};
 use Illuminate\Http\Request;
+{{importImageClassSnippet}}
 
 class DummyClass extends Controller
 {
@@ -52,7 +53,7 @@ class DummyClass extends Controller
         {{fileSnippet}}
         {{modelName}}::create($requestData);
 
-        return redirect('{{routeGroup}}{{viewName}}')->with('flash_message', '{{modelName}} added!');
+        return redirect('/admin/{{routeGroup}}{{viewName}}')->with('flash_message', '{{modelName}} added!');
     }
 
     /**
@@ -93,13 +94,12 @@ class DummyClass extends Controller
      */
     public function update(Request $request, $id)
     {
-        {{validationRules}}
         $requestData = $request->all();
-        {{fileSnippet}}
         ${{crudNameSingular}} = {{modelName}}::findOrFail($id);
+        {{fileUpdateSnippet}}
         ${{crudNameSingular}}->update($requestData);
 
-        return redirect('{{routeGroup}}{{viewName}}')->with('flash_message', '{{modelName}} updated!');
+        return redirect('/admin/{{routeGroup}}{{viewName}}')->with('flash_message', '{{modelName}} updated!');
     }
 
     /**
@@ -111,8 +111,10 @@ class DummyClass extends Controller
      */
     public function destroy($id)
     {
-        {{modelName}}::destroy($id);
+        ${{crudNameSingular}} = {{modelName}}::query()->findOrFail($id);
+        {{fileDeleteSnippet}}
+        ${{crudNameSingular}}->delete();
 
-        return redirect('{{routeGroup}}{{viewName}}')->with('flash_message', '{{modelName}} deleted!');
+        return redirect('/admin/{{routeGroup}}{{viewName}}')->with('flash_message', '{{modelName}} deleted!');
     }
 }
