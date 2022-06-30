@@ -269,7 +269,7 @@ class CrudViewCommand extends Command
         $formHelper = $this->option('form-helper');
         $this->viewDirectoryPath = config('crudgenerator.custom_template')
             ? config('crudgenerator.path') . 'views/' . $formHelper . '/'
-        : resource_path("stubs/views/" . $formHelper . '/');
+            : resource_path("stubs/views/" . $formHelper . '/');
 
 
         $this->crudName = strtolower($this->argument('name'));
@@ -289,7 +289,7 @@ class CrudViewCommand extends Command
 
         $viewDirectory = config('view.paths')[0] . '/';
 
-            $path = $viewDirectory . $this->viewPath . '/' . $this->viewName . '/';
+        $path = $viewDirectory . $this->viewPath . '/' . $this->viewName . '/';
 
 
         $this->viewTemplateDir = isset($this->userViewPath)
@@ -314,10 +314,10 @@ class CrudViewCommand extends Command
 
                 $this->formFields[$x]['name'] = trim($itemArray[0]);
                 $this->formFields[$x]['type'] = trim($itemArray[1]);
-                $this->formFields[$x]['required'] = preg_match('/' . $itemArray[0] . '/', $validations)? true : false;
+                $this->formFields[$x]['required'] = preg_match('/' . $itemArray[0] . '/', $validations) ? true : false;
 
                 if (($this->formFields[$x]['type'] === 'select'
-                    || $this->formFields[$x]['type'] === 'enum')
+                        || $this->formFields[$x]['type'] === 'enum')
                     && isset($itemArray[2])
                 ) {
                     $options = trim($itemArray[2]);
@@ -346,9 +346,14 @@ class CrudViewCommand extends Command
                 $label = '{{ trans(\'' . $this->crudName . '.' . $field . '\') }}';
             }
             $this->formHeadingHtml .= '<th>' . $label . '</th>';
-            $this->formBodyHtml .= '<td>{{ $item->' . $field . ' }}</td>';
-            $this->formBodyHtmlForShowView .= '<tr><th> ' . $label . ' </th><td> {{ $%%crudNameSingular%%->' . $field . ' }} </td></tr>';
+            if ($value['type'] !== 'file') {
+                $this->formBodyHtml .= '<td>{{ $item->' . $field . ' }}</td> ';
+                $this->formBodyHtmlForShowView .= '<tr><th> ' . $label . ' </th><td> {{ $%%crudNameSingular%%->' . $field . ' }} </td></tr>';
 
+            } else {
+                $this->formBodyHtml .= '<td><img src="{{ asset($item->' . $field . ' ?? "") }}" style="width:100px" alt=""></td> ';
+                $this->formBodyHtmlForShowView .= '<tr><th> ' . $label . ' </th><td> <img src="{{ asset($%%crudNameSingular%%->' . $field . ' ?? "") }}" style="width:100px" alt=""> </td></tr>';
+            }
             $i++;
         }
 
@@ -437,8 +442,8 @@ class CrudViewCommand extends Command
     /**
      * Form field wrapper.
      *
-     * @param  string $item
-     * @param  string $field
+     * @param string $item
+     * @param string $field
      *
      * @return string
      */
@@ -458,7 +463,7 @@ class CrudViewCommand extends Command
     /**
      * Form field generator.
      *
-     * @param  array $item
+     * @param array $item
      *
      * @return string
      */
@@ -487,7 +492,7 @@ class CrudViewCommand extends Command
     /**
      * Create a specific field using the form helper.
      *
-     * @param  array $item
+     * @param array $item
      *
      * @return string
      */
@@ -505,7 +510,7 @@ class CrudViewCommand extends Command
     /**
      * Create a password field using the form helper.
      *
-     * @param  array $item
+     * @param array $item
      *
      * @return string
      */
@@ -530,7 +535,7 @@ class CrudViewCommand extends Command
     /**
      * Create a generic input field using the form helper.
      *
-     * @param  array $item
+     * @param array $item
      *
      * @return string
      */
@@ -548,7 +553,7 @@ class CrudViewCommand extends Command
     /**
      * Create a yes/no radio button group using the form helper.
      *
-     * @param  array $item
+     * @param array $item
      *
      * @return string
      */
@@ -570,7 +575,7 @@ class CrudViewCommand extends Command
     /**
      * Create a textarea field using the form helper.
      *
-     * @param  array $item
+     * @param array $item
      *
      * @return string
      */
@@ -588,7 +593,7 @@ class CrudViewCommand extends Command
     /**
      * Create a select field using the form helper.
      *
-     * @param  array $item
+     * @param array $item
      *
      * @return string
      */
@@ -612,11 +617,10 @@ class CrudViewCommand extends Command
     }
 
 
-
     /**
      * Create a file field using the form helper.
      *
-     * @param  array $item
+     * @param array $item
      *
      * @return string
      */
